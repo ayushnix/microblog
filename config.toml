@@ -1,0 +1,60 @@
+base_url = "https://microblog.ayushnix.com"
+compile_sass = false
+theme = "kangae"
+minify_html = false
+generate_feed = true
+feed_filename = "atom.xml"
+title = "ayushnix microblog"
+description = "the personal microblog of ayushnix"
+default_language = "en"
+taxonomies = [
+  { name = "tags", feed = true }
+]
+
+[markdown]
+highlight_code = false
+render_emoji = true
+external_links_target_blank = true
+external_links_no_follow = false
+external_links_no_referrer = true
+smart_punctuation = false
+
+[extra]
+author = "Ayush Agarwal"
+username = "ayushnix"
+# avatar = "/images/shikamaru_avatar.webp"
+keywords = [ "microblog", "linux", "devops", "openbsd" ]
+# custom_css = "css/custom.css"
+# manifest = "/site.webmanifest"
+navbar = [
+  { name = "mastodon", url = "https://social.treehouse.systems/@ayushnix" },
+  { name = "github", url = "https://github.com/ayushnix" }
+]
+light_theme_color = "#f0f0f0"
+dark_theme_color = "#282c34"
+
+[extra.content_license]
+spdx = "CC-BY-NC-ND-4.0"
+url = "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.txt"
+
+[extra.source_license]
+spdx = "0BSD"
+url = "https://spdx.org/licenses/0BSD.html"
+src_url = "https://github.com/ayushnix/microblog"
+
+[extra.opengraph]
+# img = "/images/apple-touch-icon.png"
+# alt = "opengraph image description"
+
+[extra.favicon]
+# svg = "/images/favicon.svg"
+# png = "/images/favicon-32x32.png"
+# apple = "/images/apple-touch-icon.png"
+
+[extra.post_footer]
+share = true
+# discuss_github = true
+# github_url = "https://github.com/ayushnix/microblog"
+# misc = [
+#   { name = "misc", url = "https://misc.xyz" }
+# ]
