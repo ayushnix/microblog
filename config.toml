@@ -1,4 +1,4 @@
-base_url = "https://ayushnix.github.io/microblog"
+base_url = "https://microblog.ayushnix.com"
 compile_sass = false
 theme = "kangae"
 minify_html = false
