@@ -3,7 +3,7 @@
 # for the complete configuration file
 
 # [MANDATORY] the URL of the microblog
-base_url = "https://ayushnix.github.io/kangae/"
+base_url = "https://kangae.ayushnix.com"
 
 # [recommended] kangae doesn't use sass for its global stylesheet
 compile_sass = false
@@ -70,8 +70,7 @@ author = "Nara Shikamaru"
 # [recommended] your internet username
 username = "shikamaru"
 
-# [optional] your 128px avatar, preferably svg
-# optimize your image using something like squoosh.app
+# [optional] your 128x128 avatar, preferably svg
 avatar = "/images/shikamaru_avatar.webp"
 
 # [optional] the keywords which highlight the type of content on your microblog
