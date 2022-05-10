@@ -24,7 +24,7 @@ author = "Ayush Agarwal"
 username = "ayushnix"
 avatar = "/images/ayushnix_avatar.webp"
 keywords = [ "microblog", "linux", "devops", "openbsd" ]
-# custom_css = "css/custom.css"
+custom_css = "css/custom.css"
 # manifest = "/site.webmanifest"
 navbar = [
   { name = "mastodon", url = "https://social.treehouse.systems/@ayushnix" },
