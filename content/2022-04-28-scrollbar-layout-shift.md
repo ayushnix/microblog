@@ -24,7 +24,8 @@ html {
 }
 ```
 
-Unsurprisingly, as of 2022-04-28, Safari [doesn't support this][2]. Oh well, `¯\_(ツ)_/¯`.
+Unsurprisingly, as of 2022-04-28, Safari [doesn't support this][2]. Oh well,
+{{ kaomoji(label="shrug kaomoji", text="¯\_(ツ)_/¯") }}.
 
 [1]: https://aykevl.nl/2014/09/fix-jumping-scrollbar
 [2]: https://caniuse.com/?search=scrollbar-gutter
