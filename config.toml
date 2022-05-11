@@ -43,8 +43,8 @@ url = "https://spdx.org/licenses/0BSD.html"
 src_url = "https://github.com/ayushnix/microblog"
 
 [extra.opengraph]
-# img = "/images/apple-touch-icon.png"
-# alt = "opengraph image description"
+img = "images/ayushnix-ogimage.webp"
+alt = "ayushnix microblog opengraph image"
 
 [extra.favicon]
 svg = "images/favicon.svg"
