@@ -123,17 +123,24 @@ buying me a coffee :coffee:
 
 If you're in India, you can also use UPI for donations. My UPI address is `ayushnix@ybl`.
 
+# Notes
+
+I'm not really a web developer and I don't intend to be one either. However, I am interested in
+learning HTML and CSS to create lightweight textual websites. You may be interested in reading [my
+log about how I learned HTML and CSS][12]. However, this page is just an unorganized dump of my
+thoughts and isn't a polished blog post. [Seirdy's blog post on creating textual websites][13] is
+probably a better reference.
+
 # TODO (maybe?)
 
 - (responsive) image shortcodes
-- sample favicon, opengraph content, and web manifest
 - run prettier on HTML and CSS before deployment
-- pagination
 - twitter and mastodon shortcodes
 - add optional support for cross posting and commenting on mastodon without using JS
 - add optional support for [giscus][9] and [loading mastodon comments][10]
 - add shortcode for asciinema
 - add shortcode for blockquote and citation
+- pagination
 
 [1]: https://kangae.ayushnix.com/
 [2]: https://www.getzola.org/
@@ -146,3 +153,5 @@ If you're in India, you can also use UPI for donations. My UPI address is `ayush
 [9]: https://giscus.app/
 [10]: https://carlschwan.eu/2020/12/29/adding-comments-to-your-static-blog-with-mastodon/
 [11]: https://github.com/ayushnix/kangae/blob/master/static/css/style-external-links.css
+[12]: https://wiki.ayushnix.com/frontend/creating-a-website/
+[13]: https://seirdy.one/2020/11/23/website-best-practices.html
