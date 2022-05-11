@@ -22,7 +22,7 @@ smart_punctuation = false
 [extra]
 author = "Ayush Agarwal"
 username = "ayushnix"
-avatar = "/images/ayushnix_avatar.webp"
+avatar = "images/ayushnix_avatar.webp"
 keywords = [ "microblog", "linux", "devops", "openbsd" ]
 custom_css = "css/custom.css"
 # manifest = "/site.webmanifest"
@@ -47,9 +47,9 @@ src_url = "https://github.com/ayushnix/microblog"
 # alt = "opengraph image description"
 
 [extra.favicon]
-svg = "/images/favicon.svg"
-png = "/images/favicon-32x32.png"
-apple = "/images/apple-touch-icon.png"
+svg = "images/favicon.svg"
+png = "images/favicon-32x32.png"
+apple = "images/apple-touch-icon.png"
 
 [extra.post_footer]
 share = true
