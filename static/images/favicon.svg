@@ -1,0 +1,9 @@
+<svg version="1.2" width="41.3mm" height="41.3mm" viewBox="7667 12430 4130 4130" preserveAspectRatio="xMidYMid" fill-rule="evenodd" stroke-width="28.222" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" xml:space="preserve">
+  <g class="Page">
+    <g class="com.sun.star.drawing.CustomShape">
+      <path class="BoundingBox" fill="none" d="M7667 12430h4130v4130H7667z"/>
+      <path fill="#E0E0E0" d="M8355 12430c-121 0-239 32-344 92-105 61-191 147-252 252-60 105-92 223-92 344v2753c0 121 32 239 92 344 61 105 147 191 252 252 105 60 223 92 344 92h2753c121 0 239-32 344-92 105-61 191-147 252-252 60-105 92-223 92-344v-2753c0-121-32-239-92-344-61-105-147-191-252-252-105-60-223-92-344-92H8355Z"/>
+      <text class="SVGTextShape"><tspan class="TextParagraph" font-family="LM Mono 12, monospace" font-size="2540" font-weight="400"><tspan class="TextPosition" x="8423" y="15392"><tspan style="white-space:pre">#!</tspan></tspan></tspan></text>
+    </g>
+  </g>
+</svg>

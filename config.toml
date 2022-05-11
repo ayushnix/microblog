@@ -47,9 +47,9 @@ src_url = "https://github.com/ayushnix/microblog"
 # alt = "opengraph image description"
 
 [extra.favicon]
-# svg = "/images/favicon.svg"
-# png = "/images/favicon-32x32.png"
-# apple = "/images/apple-touch-icon.png"
+svg = "/images/favicon.svg"
+png = "/images/favicon-32x32.png"
+apple = "/images/apple-touch-icon.png"
 
 [extra.post_footer]
 share = true
