@@ -1,7 +1,7 @@
 +++
 title = "Bricked TP-Link EAP225 v3 WiFi Access Point"
 [taxonomies]
-tags = [ "openwrt" ]
+tags = [ "hardware", "openwrt" ]
 +++
 
 While trying to make OpenWrt sysupgrades easier, I started experimenting with the OpenWrt

@@ -1,7 +1,7 @@
 +++
 title = "Successful Recovery of EAP225"
 [taxonomies]
-tags = [ "openwrt" ]
+tags = [ "hardware", "openwrt" ]
 +++
 
 I tried to solder the pads and the resistors in the EAP225 myself but things didn't work out as

@@ -1,7 +1,7 @@
 +++
 title = "Absence of Decent Terminal File Manager"
 [taxonomies]
-tags = [ "linux" ]
+tags = [ "linux", "terminal" ]
 +++
 
 I quit using GUI file managers on Linux ever since I found [ranger][1] more than 5 years ago.
