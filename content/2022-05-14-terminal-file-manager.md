@@ -12,11 +12,11 @@ lf unusable in r27. I don't know why but I got turned off looking at [joshuto][4
 [nnn][5] has made some design decisions which I despise with a passion, heavy use of environment
 variables being one of them.
 
-I'll go ahead use [xplr][6] for now but in my opinion, the lack of dual panes (or better yet, miller
-columns) in a terminal file manager is a fundamental flaw. You end up wasting time going in and out
-of directories and files you may not want to rather than glancing over their contents in a preview
-pane. If there are no better ranger-like terminal file managers available in the near future, I'll
-probably create my own.
+I'll go ahead and use [xplr][6] for now but in my opinion, the lack of dual panes (or better yet,
+miller columns) in a terminal file manager is a fundamental flaw. You end up wasting time going in
+and out of directories and files you may not want to rather than glancing over their contents in a
+preview pane. If there are no better ranger-like terminal file managers available in the near
+future, I'll probably create my own.
 
 [1]: https://github.com/ranger/ranger
 [2]: https://github.com/gokcehan/lf
