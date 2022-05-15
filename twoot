@@ -278,7 +278,7 @@ gen_tweet() {
 }
 
 gen_toot() {
-  local auth_token url id response_json content dname uname pdate mstsrv
+  local auth_token url id response_json content dname uname pdate mstsrv real_url
   response_json="./mastodon/$mastoserv-response.json"
 
   if ! [[ -s ./mastodon/$mastoserv-app.json ]]; then
@@ -306,11 +306,12 @@ gen_toot() {
         uname="$(jq -r .account.username $response_json)"
         pdate="$(jq -r .created_at $response_json | date +'%b %d, %Y')"
         mstsrv="$(jq -r .account.url $response_json)"
+        real_url="$(jq -r .url $response_json)"
         mstsrv="${mstsrv##https://}"
         mstsrv="${mstsrv%%/*}"
         printf "%s\n" '<blockquote class="mastodon-toot">'
         printf "%s\n" "$content"
-        printf "%s\n" "- $dname (@$uname@$mstsrv) <a href=\"$1\">$pdate</a>"
+        printf "%s\n" "- $dname (@$uname@$mstsrv) <a href=\"$real_url\">$pdate</a>"
         printf "%s\n" '</blockquote>'
       fi
       rm -f "$response_json"
@@ -321,7 +322,7 @@ gen_toot() {
     _die "error: either the auth.json file doesn't exist or invalid input received"
   fi
 
-  unset -v auth_token url id response_json content dname uname pdate mstsrv
+  unset -v auth_token url id response_json content dname uname pdate mstsrv real_url
 }
 
 # ------------------------------------------------------------------------------
