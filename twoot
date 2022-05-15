@@ -271,7 +271,7 @@ gen_tweet() {
 
   if [[ -n $1 ]]; then
     curl -s "https://publish.twitter.com/oembed?omit_script=true&url=$1" \
-      | jq -r .html | htmlq -p blockquote | $sedbin 's;?ref_src.*";";g'
+      | jq -r .html | htmlq -p blockquote | $sedbin -e 's;?ref_src.*";";g' -e 's;^[ \t]*;;g'
   else
     _die "error: please provide input"
   fi
