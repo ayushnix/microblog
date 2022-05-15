@@ -279,6 +279,49 @@ gen_tweet() {
   fi
 }
 
+gen_toot() {
+  local auth_token url id response_json content dname uname tmpdate pdate
+  response_json="./mastodon/$mastoserv-response.json"
+
+  if ! [[ -s ./mastodon/$mastoserv-app.json ]]; then
+    _warn "warning: app.json not found, creating one right now ..."
+    create_app
+  fi
+  if ! [[ -s ./mastodon/$mastoserv-auth.json ]]; then
+    _warn "warning: auth.json not found, creating one right now ..."
+    masto_auth
+  fi
+
+  if [[ -s ./mastodon/$mastoserv-auth.json ]] && [[ -n $1 ]]; then
+    auth_token="$(jq -r .access_token ./mastodon/$mastoserv-auth.json)"
+    url="https://$mastoserv/api/v1/statuses/"
+    # remove suffix / if present
+    id="${1%/}"
+    # get the toot id number
+    id="${id##*/}"
+    if [[ $id =~ [0-9]+ ]]; then
+      curl -s -H "Authorization: Bearer $(jq -r .access_token ./mastodon/$mastoserv-auth.json)" \
+        https://$mastoserv/api/v1/statuses/"$id" > "$response_json"
+      if [[ -s "$response_json" ]]; then
+        content="$(jq -r .content $response_json)"
+        dname="$(jq -r .account.display_name $response_json)"
+        uname="$(jq -r .account.username $response_json)"
+        pdate="$(jq -r .created_at $response_json | date +'%b %d, %Y')"
+        printf "%s\n" '<blockquote class="mastodon-toot">'
+        printf "%s\n" "$content"
+        printf "%s\n" "- $dname (@$uname) <a href=\"$1\">$pdate</a>"
+        printf "%s\n" '</blockquote>'
+      fi
+    else
+      _die "error: couldn't find toot id in your input"
+    fi
+  else
+    _die "error: either the auth.json file doesn't exist or invalid input received"
+  fi
+
+  unset -v auth_token url id response_json
+}
+
 # ------------------------------------------------------------------------------
 
 _warn() {
