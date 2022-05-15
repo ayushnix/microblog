@@ -31,7 +31,7 @@ Here's a toot from mastodon
 
 <blockquote class="mastodon-toot">
 <p>Work-in-progress book on Linux kernel internals by 0xAX <a href="https://github.com/0xAX/linux-insides/blob/master/SUMMARY.md" rel="nofollow noopener noreferrer" target="_blank"><span class="invisible">https://</span><span class="ellipsis">github.com/0xAX/linux-insides/</span><span class="invisible">blob/master/SUMMARY.md</span></a><br><a href="https://fosstodon.org/tags/linux" class="mention hashtag" rel="nofollow noopener noreferrer" target="_blank">#<span>linux</span></a> <a href="https://fosstodon.org/tags/kernel" class="mention hashtag" rel="nofollow noopener noreferrer" target="_blank">#<span>kernel</span></a> <a href="https://fosstodon.org/tags/linuxkernel" class="mention hashtag" rel="nofollow noopener noreferrer" target="_blank">#<span>linuxkernel</span></a></p>
-- BayLibre (@baylibre@fosstodon.org) <a href="https://social.treehouse.systems/web/@baylibre@fosstodon.org/108307448501709873">May 16, 2022</a>
+- BayLibre (@baylibre@fosstodon.org) <a href="https://fosstodon.org/@baylibre/108307448497117943">May 16, 2022</a>
 </blockquote>
 
 Oh, the script also helps crosspost this post to Mastodon. Maybe I'll add the Twitter and Mastodon icons near the blockquote to showcase the embeds.
@@ -40,6 +40,8 @@ All that's left is to somehow add a 'discuss on mastodon' link which points to t
 mastodon toot although I'm not sure if that's possible because of the context limitations of Tera
 templating engine.
 
-EDIT: After receiving a suggestion on Mastodon, I updated the toot generation code to mention the name of the mastodon instance as well.
+EDIT: After receiving a suggestion on Mastodon, I updated the toot generation code to mention the
+name of the mastodon instance as well. The URL that the date in the toot points to has been updated
+to point to the actual instance rather than the instance I'm copying links from.
 
 [1]: https://github.com/ayushnix/microblog/blob/master/twoot
