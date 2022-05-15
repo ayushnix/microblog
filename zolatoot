@@ -1,0 +1,345 @@
+#!/bin/bash
+# SPDX-License-Identifier: 0BSD
+# Copyright (c) 2022 by Ayush Agarwal
+#
+# here's a shitty shell script to parse zola markdown microblog posts and cross
+# post them to mastodon
+# the mastodon interaction code is inspired by github.com/cympfh/mastodon-cli
+#
+# this script may not be suitable for general usage - it makes assumptions
+# about some installed software, paths, and URLs that may not apply for everyone
+# ------------------------------------------------------------------------------
+
+readonly redcolor="\033[31m"
+readonly yelcolor="\033[33m"
+readonly rescolor="\033[0m"
+
+# the list of global variables used by this script
+# tags  - the array that holds the tags inside a markdown post
+# title - the string to store the title of a markdown post
+declare -a tags
+declare title
+declare content
+declare posturl
+declare microblog_url="https://microblog.ayushnix.com"
+declare mastoserv="social.treehouse.systems"
+declare client_name="ayushnix-zola-toot"
+declare redirect_uri="urn:ietf:wg:oauth:2.0:oob"
+declare tmpfilepost
+tmpfilepost="$(mktemp)"
+
+# busybox is preferred to reduce latency
+declare sedbin="busybox sed"
+declare basebin="busybox basename"
+declare cutbin="busybox cut"
+# ripgrep is faster than grep
+declare grepbin="rg"
+
+# ------------------------------------------------------------------------------
+
+# print the title for the toot written inside a zola markdown post
+get_title() {
+  title="$($sedbin -n '/^+++$/,/^+++$/p' "$1" \
+    | $grepbin -v '^\+++$' \
+    | dasel select -m -p toml -s '.title' 2> /dev/null)"
+  if [[ -n $title ]]; then
+    printf "%s\n" "$title"
+  else
+    _warn "$1 doesn't have any title"
+    return 1
+  fi
+}
+
+# get a "stripped" version of the markdown content to post on the toot
+get_content() {
+  if ! is_installed pandoc; then
+    _die "error: pandoc is not installed"
+  fi
+
+  if ! [[ -f ./remove_link.lua ]]; then
+    _die "unable to find remove_link.lua"
+  fi
+
+  content="$($sedbin -n '/^+++$/,/^+++$/!p' "$1" \
+    | pandoc --from commonmark --to markdown_strict --lua-filter ./remove_link.lua --wrap=none)"
+  if [[ -n $content ]]; then
+    printf "%s\n" "$content"
+  else
+    _die "$1 doesn't have any content"
+  fi
+}
+
+# print the tags for the toot written inside a zola markdown post
+get_tags() {
+  local count
+
+  mapfile -t tags < <($sedbin -n '/^+++$/,/^+++$/p' "$1" \
+    | $grepbin -v '^\+++$' \
+    | dasel select -m -p toml -s '.taxonomies.tags.[*]' 2> /dev/null)
+  if [[ ${#tags[@]} -gt 0 ]]; then
+    for ((count = 0; count < "${#tags[@]}"; count++)); do
+      printf "%s" "#${tags[$count]} "
+    done
+    printf "%s\n" ""
+  else
+    _warn "$1 doesn't have any tags"
+    return 1
+  fi
+
+  unset -v count
+}
+
+# generate the microblog url for a post
+generate_posturl() {
+  local tmpurl
+
+  tmpurl="$($basebin "$1" .md | $cutbin -d '-' -f 4-)"
+
+  if [[ -n $tmpurl ]] && [[ $tmpurl =~ [[:alnum:]_] ]]; then
+    posturl="$microblog_url/$tmpurl"
+    printf "%s\n" "$posturl"
+  else
+    _die "error: invalid file name detected"
+  fi
+
+  unset -v tmpurl
+}
+
+# ------------------------------------------------------------------------------
+
+create_app() {
+  local url app_json
+
+  if ! [[ -d mastodon ]]; then
+    mkdir -p ./mastodon
+  fi
+
+  if [[ -f ./mastodon/"$mastoserv"-app.json ]]; then
+    _warn "app.json already exists, skipping creating another"
+    return 1
+  fi
+
+  url="https://$mastoserv/api/v1/apps"
+  app_json="./mastodon/$mastoserv-app.json"
+
+  curl -s -X POST "$url" \
+    -d "client_name=$client_name&redirect_uris=$redirect_uri&scopes=read%3Astatuses%20write%3Amedia%20write%3Astatuses" > "$app_json" \
+    || _die "error: unable to create an application on $mastoserv"
+
+  unset -v url app_json
+}
+
+masto_auth() {
+  if [[ -f ./mastodon/"$mastoserv"-auth.json ]]; then
+    _warn "auth.json already exists, skipping creating another"
+    return 1
+  fi
+
+  local url auth_json client_id client_sec code
+
+  url="https://$mastoserv/oauth/authorize"
+  client_id="$(jq -r .client_id ./mastodon/"$mastoserv"-app.json)"
+  client_sec="$(jq -r .client_secret ./mastodon/"$mastoserv"-app.json)"
+
+  xdg-open "${url}?client_id=$client_id&response_type=code&redirect_uri=$redirect_uri&scope=read%3Astatuses%20write%3Amedia%20write%3Astatuses" \
+    || _die "error: unable to open a web browser"
+
+  read -r -p "enter the code: " code
+
+  url="https://$mastoserv/oauth/token"
+  auth_json="./mastodon/$mastoserv-auth.json"
+
+  curl -s -X POST \
+    -F "client_id=$client_id" \
+    -F "client_secret=$client_sec" \
+    -F "grant_type=authorization_code" \
+    -F "redirect_uri=$redirect_uri" \
+    -F "code=$code" \
+    "$url" > "$auth_json" || _die "error: unable to get the authorization token"
+
+  unset -v url auth_json client_id code
+}
+
+post_toot() {
+  local url auth_token msg sha256sumpost response_json post_id choice
+
+  if ! [[ -s ./mastodon/$mastoserv-app.json ]]; then
+    _warn "warning: app.json not found, creating one right now ..."
+    create_app
+  fi
+
+  if ! [[ -s ./mastodon/$mastoserv-auth.json ]]; then
+    _warn "warning: auth.json not found, creating one right now ..."
+    masto_auth
+  fi
+
+  if [[ -s ./mastodon/$mastoserv-app.json ]] && [[ -s ./mastodon/$mastoserv-auth.json ]]; then
+    auth_token="$(jq -r .access_token ./mastodon/$mastoserv-auth.json)"
+    url="https://$mastoserv/api/v1/statuses"
+    if ! [[ -s /usr/lib/libreoffice/program/uri-encode ]]; then
+      _die "error: unable to find uri-encode"
+    fi
+    msg="$(/usr/lib/libreoffice/program/uri-encode < "$tmpfilepost")"
+    response_json="./mastodon/$mastoserv-response.json"
+    sha256sumpost="$(sha256sum --tag "$tmpfilepost" | cut -d "=" -d " " -f 4 | tr -d '\n')"
+    if [[ -z $sha256sumpost ]]; then
+      _die "error: unable to calculate the idempotency key"
+    fi
+
+    printf "%s\n" "do you want to"
+    printf "%s\n" "1 - post publicly?"
+    printf "%s\n" "2 - post privately?"
+    printf "%s\n" ""
+    while [[ $choice != 1 ]] && [[ $choice != 2 ]]; do
+      read -r -p "enter either 1 or 2 as input: " choice
+      printf "%s\n" ""
+      if [[ $choice == 1 ]]; then
+        vis="public"
+      elif [[ $choice == 2 ]]; then
+        vis="direct"
+      fi
+    done
+
+    curl -s -X POST \
+      -H "Authorization: Bearer $auth_token" \
+      -H "Idempotency-Key: $sha256sumpost" \
+      -d "status=$msg&media_ids[]=&visibility=$vis" "$url" > "$response_json" \
+      || _die "error: bad response received"
+
+    if [[ -s $response_json ]]; then
+      post_id="$(jq -r .id $response_json)"
+    else
+      _die "error: unable to find the post id that was tooted"
+    fi
+    printf "%s\n" "your toot has been published on"
+    printf "%s\n" "https://$mastoserv/web/@ayushnix/$post_id"
+    unset -v url auth_token msg sha256sumpost response_json post_id choice
+  else
+    unset -v url auth_token msg sha256sumpost response_json post_id choice
+    _die "error: unable to find either app.json or auth.json"
+  fi
+}
+
+# ------------------------------------------------------------------------------
+
+_warn() {
+  if [[ -n $1 ]]; then
+    printf "%b%s%b\n" "$yelcolor" "$1" "$rescolor" >&2
+  fi
+}
+
+_die() {
+  if [[ -n $1 ]]; then
+    printf "%b%s%b\n" "$redcolor" "$1" "$rescolor" >&2
+  fi
+  exit 1
+}
+
+is_installed() {
+  if command -v "$1" > /dev/null 2>&1; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+_confirm() {
+  local msg choice
+  msg="${1:-do you want to continue? (Y/n)}"
+  while true; do
+    printf "%s" "$msg "
+    read -r choice
+    case "$choice" in
+      [nN]*)
+        unset -v msg choice
+        _die
+        ;;
+      [yY]*)
+        unset -v msg choice
+        break
+        ;;
+      *) _warn "please provide valid input" ;;
+    esac
+  done
+  unset -v msg choice
+}
+
+main() {
+  local software choice
+
+  # check presence of software dependencies and perform possible fallbacks if needed
+  for software in curl dasel xdg-open; do
+    if ! is_installed "$software"; then
+      _die "error: $software is not installed"
+    fi
+  done
+  for software in pandoc busybox rg; do
+    if ! is_installed "$software"; then
+      _warn "warning: $software is not installed"
+      _warn "some features may not work as expected and you may experience lower performance"
+    fi
+  done
+  if ! is_installed busybox; then
+    for software in cut basename sed; do
+      if ! is_installed "$software"; then
+        _die "error: $software is not installed"
+      fi
+    done
+    sedbin="sed"
+    cutbin="cut"
+    basebin="basename"
+  fi
+  if ! is_installed rg && is_installed grep; then
+    grepbin="grep"
+  elif ! is_installed rg && ! is_installed grep; then
+    _die "error: grep is not installed"
+  fi
+
+  printf "%s\n" "do you want to"
+  printf "%s\n" "1 - post everything including the content?"
+  printf "%s\n" "2 - post the title, tags, and the microblog URL?"
+  printf "%s\n" ""
+  while [[ $choice != 1 ]] && [[ $choice != 2 ]]; do
+    read -r -p "enter either 1 or 2 as input: " choice
+    printf "%s\n" ""
+    if [[ $choice == 1 ]]; then
+      {
+        get_title "$1"
+        printf "%s\n" ""
+        get_content "$1"
+        printf "%s\n" ""
+        get_tags "$1"
+        printf "%s\n" ""
+        generate_posturl "$1"
+      } > "$tmpfilepost"
+      printf "%s\n\n" "here's how the toot looks like (excluding the hyphen ascii art):"
+      printf "%s\n" "-------------------------------"
+      cat "$tmpfilepost"
+      printf "%s\n\n" "-------------------------------"
+      _confirm "do you want to post this toot? (Y/n)"
+      post_toot
+    elif [[ $choice == 2 ]]; then
+      {
+        get_title "$1"
+        printf "%s\n" ""
+        get_tags "$1"
+        printf "%s\n" ""
+        generate_posturl "$1"
+      } > "$tmpfilepost"
+      printf "%s\n\n" "here's how the toot looks like (excluding the hyphen ascii art):"
+      printf "%s\n" "-------------------------------"
+      cat "$tmpfilepost"
+      printf "%s\n\n" "-------------------------------"
+      _confirm "do you want to post this toot? (Y/n)"
+      post_toot
+    fi
+  done
+
+  if [[ -f ./mastodon/$mastoserv-response.json ]]; then
+    rm -f "./mastodon/$mastoserv-response.json"
+  fi
+
+  unset -v software choice
+}
+
+main "$@"
