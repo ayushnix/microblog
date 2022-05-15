@@ -6,8 +6,7 @@
 # post them to mastodon
 # the mastodon interaction code is inspired by github.com/cympfh/mastodon-cli
 #
-# this script may not be suitable for general usage - it makes assumptions
-# about some installed software, paths, and URLs that may not apply for everyone
+# this script may not be suitable for a wider audience
 # ------------------------------------------------------------------------------
 
 readonly redcolor="\033[31m"
@@ -167,7 +166,6 @@ post_toot() {
     _warn "warning: app.json not found, creating one right now ..."
     create_app
   fi
-
   if ! [[ -s ./mastodon/$mastoserv-auth.json ]]; then
     _warn "warning: auth.json not found, creating one right now ..."
     masto_auth
