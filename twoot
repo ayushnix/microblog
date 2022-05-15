@@ -280,7 +280,7 @@ gen_tweet() {
 }
 
 gen_toot() {
-  local auth_token url id response_json content dname uname tmpdate pdate
+  local auth_token url id response_json content dname uname pdate
   response_json="./mastodon/$mastoserv-response.json"
 
   if ! [[ -s ./mastodon/$mastoserv-app.json ]]; then
@@ -302,7 +302,7 @@ gen_toot() {
     if [[ $id =~ [0-9]+ ]]; then
       curl -s -H "Authorization: Bearer $(jq -r .access_token ./mastodon/$mastoserv-auth.json)" \
         https://$mastoserv/api/v1/statuses/"$id" > "$response_json"
-      if [[ -s "$response_json" ]]; then
+      if [[ -s $response_json ]]; then
         content="$(jq -r .content $response_json)"
         dname="$(jq -r .account.display_name $response_json)"
         uname="$(jq -r .account.username $response_json)"
@@ -312,6 +312,7 @@ gen_toot() {
         printf "%s\n" "- $dname (@$uname) <a href=\"$1\">$pdate</a>"
         printf "%s\n" '</blockquote>'
       fi
+      rm -f "$response_json"
     else
       _die "error: couldn't find toot id in your input"
     fi
@@ -319,7 +320,7 @@ gen_toot() {
     _die "error: either the auth.json file doesn't exist or invalid input received"
   fi
 
-  unset -v auth_token url id response_json
+  unset -v auth_token url id response_json content dname uname pdate
 }
 
 # ------------------------------------------------------------------------------
