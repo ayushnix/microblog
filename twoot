@@ -397,7 +397,18 @@ main() {
     _die "error: grep is not installed"
   fi
 
+  OPTIND=1
+  while getopts ":t:m:p:h" opt; do
+    case "$opt" in
+      t) gen_tweet "$OPTARG" ;;
+      m) gen_toot "$OPTARG" ;;
+      p) toot_choice "$OPTARG" ;;
+      h) help_menu ;;
+      \?) _die "invalid option specified -$OPTARG" ;;
+      :) _die "-$OPTARG requires an argument" ;;
+    esac
   done
+  shift "$((OPTIND - 1))"
 
   if [[ -f ./mastodon/$mastoserv-response.json ]]; then
     rm -f "./mastodon/$mastoserv-response.json"
