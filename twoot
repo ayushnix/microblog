@@ -266,6 +266,19 @@ toot_choice() {
   unset -v choice
 }
 
+gen_tweet() {
+  if ! is_installed htmlq; then
+    _die "error: htmlq is not installed"
+  fi
+
+  if [[ -n $1 ]]; then
+    curl -s "https://publish.twitter.com/oembed?omit_script=true&url=$1" \
+      | jq -r .html | htmlq -p blockquote | $sedbin 's;?ref_src.*";";g'
+  else
+    _die "error: please provide input"
+  fi
+}
+
 # ------------------------------------------------------------------------------
 
 _warn() {
