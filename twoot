@@ -325,6 +325,21 @@ gen_toot() {
 
 # ------------------------------------------------------------------------------
 
+help_menu() {
+  local prg="twoot"
+  printf "%s" "\
+$prg - post zola markdown posts to mastodon, generate html tweets and toots
+
+usage: $prg [options]
+
+  $prg, $prg -h                  print the help menu
+  $prg -t \"<twitter post link>\"   get embeddable html twitter post
+  $prg -m \"<mastodon post link>\"  get embeddable mastodon post
+  $prg -p <zola markdown post>    post a toot to mastodon
+"
+  unset -v prg
+}
+
 _warn() {
   if [[ -n $1 ]]; then
     printf "%b%s%b\n" "$yelcolor" "$1" "$rescolor" >&2
@@ -368,6 +383,10 @@ _confirm() {
 }
 
 main() {
+  if [[ -z $* ]]; then
+    help_menu
+  fi
+
   local software choice
 
   # check presence of software dependencies and perform possible fallbacks if needed
