@@ -220,6 +220,52 @@ post_toot() {
   fi
 }
 
+toot_choice() {
+  local choice
+
+  printf "%s\n" "do you want to"
+  printf "%s\n" "1 - post everything including the content?"
+  printf "%s\n" "2 - post the title, tags, and the microblog URL?"
+  printf "%s\n" ""
+  while [[ $choice != 1 ]] && [[ $choice != 2 ]]; do
+    read -r -p "enter either 1 or 2 as input: " choice
+    printf "%s\n" ""
+    if [[ $choice == 1 ]]; then
+      {
+        get_title "$1"
+        printf "%s\n" ""
+        get_content "$1"
+        printf "%s\n" ""
+        get_tags "$1"
+        printf "%s\n" ""
+        generate_posturl "$1"
+      } > "$tmpfilepost"
+      printf "%s\n\n" "here's how the toot looks like (excluding the hyphen ascii art):"
+      printf "%s\n" "-------------------------------"
+      cat "$tmpfilepost"
+      printf "%s\n\n" "-------------------------------"
+      _confirm "do you want to post this toot? (Y/n)"
+      post_toot
+    elif [[ $choice == 2 ]]; then
+      {
+        get_title "$1"
+        printf "%s\n" ""
+        get_tags "$1"
+        printf "%s\n" ""
+        generate_posturl "$1"
+      } > "$tmpfilepost"
+      printf "%s\n\n" "here's how the toot looks like (excluding the hyphen ascii art):"
+      printf "%s\n" "-------------------------------"
+      cat "$tmpfilepost"
+      printf "%s\n\n" "-------------------------------"
+      _confirm "do you want to post this toot? (Y/n)"
+      post_toot
+    fi
+  done
+
+  unset -v choice
+}
+
 # ------------------------------------------------------------------------------
 
 _warn() {
@@ -295,44 +341,6 @@ main() {
     _die "error: grep is not installed"
   fi
 
-  printf "%s\n" "do you want to"
-  printf "%s\n" "1 - post everything including the content?"
-  printf "%s\n" "2 - post the title, tags, and the microblog URL?"
-  printf "%s\n" ""
-  while [[ $choice != 1 ]] && [[ $choice != 2 ]]; do
-    read -r -p "enter either 1 or 2 as input: " choice
-    printf "%s\n" ""
-    if [[ $choice == 1 ]]; then
-      {
-        get_title "$1"
-        printf "%s\n" ""
-        get_content "$1"
-        printf "%s\n" ""
-        get_tags "$1"
-        printf "%s\n" ""
-        generate_posturl "$1"
-      } > "$tmpfilepost"
-      printf "%s\n\n" "here's how the toot looks like (excluding the hyphen ascii art):"
-      printf "%s\n" "-------------------------------"
-      cat "$tmpfilepost"
-      printf "%s\n\n" "-------------------------------"
-      _confirm "do you want to post this toot? (Y/n)"
-      post_toot
-    elif [[ $choice == 2 ]]; then
-      {
-        get_title "$1"
-        printf "%s\n" ""
-        get_tags "$1"
-        printf "%s\n" ""
-        generate_posturl "$1"
-      } > "$tmpfilepost"
-      printf "%s\n\n" "here's how the toot looks like (excluding the hyphen ascii art):"
-      printf "%s\n" "-------------------------------"
-      cat "$tmpfilepost"
-      printf "%s\n\n" "-------------------------------"
-      _confirm "do you want to post this toot? (Y/n)"
-      post_toot
-    fi
   done
 
   if [[ -f ./mastodon/$mastoserv-response.json ]]; then
