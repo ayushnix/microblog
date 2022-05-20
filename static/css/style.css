@@ -39,6 +39,8 @@ html {
   /* prevent layout shift when switching between pages with and without a
    * scrollbar */
   scrollbar-gutter: stable both-edges;
+  /* fallback for safari - remove if it starts supporting scrollbar-gutter */
+  overflow-y: scroll;
 }
 
 /* inherit the border-box model in all elements */
@@ -64,20 +66,22 @@ html {
 
 /* reduce distraction from text by removing underlines from hyperlinks */
 /* rely on color to distinguish hyperlinks */
+/* the order of pseudo classes should follow the LVHA order */
+/* :link, :visited, :hover, :active */
 a {
   color: var(--fg-href);
   text-decoration: none;
 }
 
+/* subdue the color of visited hyperlinks */
+a:visited {
+  color: var(--fg-color);
+}
+
 /* underline hyperlinks on hover and increase their underline offset */
 a:hover {
   text-decoration: underline;
-  text-underline-offset: var(--step-s5);
-}
-
-/* change the color of visited hyperlinks */
-a:visited {
-  color: var(--fg-href-visited);
+  text-underline-offset: var(--space-3xs);
 }
 
 /* if the role of a list is explicitly defined, it isn't being used as a list */
@@ -154,7 +158,7 @@ h1 {
 
 .primary-footer {
   font-size: var(--step-s1);
-  border-block-start: 0.1em dotted var(--fg-border);
+  border-block-start: 0.1rem dotted var(--fg-border);
 }
 
 /* add a hash symbol before the taxonomy tag links */
@@ -187,7 +191,7 @@ article > * + * {
   display: flex;
   gap: var(--space-2xs);
   justify-content: space-between;
-  border-block-end: 0.1em dotted var(--fg-border);
+  border-block-end: 0.1rem dotted var(--fg-border);
 }
 
 /* borrowed from the html5-boilerplate css file on github */
@@ -206,7 +210,6 @@ article > * + * {
 
 .post-title::before {
   content: " · ";
-
 }
 
 /* show the title on devices which are at least as wide as the iPad Mini */
@@ -238,8 +241,40 @@ article > * + * {
 
 pre {
   padding: var(--space-2xs);
-  border: 0.1em solid var(--fg-border);
+  border: 0.1rem solid var(--fg-border);
   border-radius: var(--step-s5);
+}
+
+/* code blocks inside pre should be a block otherwise it doesn't work well when
+ * text overflows inside code */
+pre > code {
+  display: block;
+}
+
+/* show the name of the programming language inside pre */
+pre[data-lang]::before {
+  display: block;
+  content: attr(data-lang);
+  text-decoration: underline var(--fg-border) solid;
+  text-underline-offset: var(--space-3xs);
+  text-decoration-thickness: 0.1rem;
+  text-transform: uppercase;
+  padding-block-end: var(--space-2xs);
+}
+
+/* add space after line numbers and don't select the line numbers for copying */
+pre[data-linenos] table tbody tr td:first-child {
+  padding-inline-end: var(--space-s);
+  user-select: none;
+}
+
+pre[data-linenos] table {
+  /* if we set table width to 100% and if text overflows, the space separation
+   * between cells is removed */
+  /* width: 100%; */
+  border-collapse: collapse;
+  border-spacing: 0;
+  text-indent: 0;
 }
 
 .unknown-page-emoticon {
@@ -250,8 +285,15 @@ pre {
 }
 
 blockquote {
+  margin-inline-start: var(--space-l);
   padding: var(--space-2xs);
   border-inline-start: var(--step-s4) solid var(--fg-border);
+}
+
+.figquote {
+  display: flex;
+  flex-direction: column;
+  place-items: center;
 }
 
 :is(ul, ol) {
@@ -261,19 +303,19 @@ blockquote {
 mark {
   /* plays well with at least 1.5 line-height or more */
   padding-inline: var(--space-3xs);
-  padding-block: 0.1em;
+  padding-block: 0.1rem;
   color: var(--fg-mark);
   background: var(--bg-mark);
   border-radius: var(--step-s5);
 }
 
 kbd {
-  border-inline: 0.1em solid var(--fg-border);
-  border-block-start: 0.1em solid var(--fg-border);
-  border-block-end: 0.2em solid var(--fg-border);
+  border-inline: 0.1rem solid var(--fg-border);
+  border-block-start: 0.1rem solid var(--fg-border);
+  border-block-end: 0.2rem solid var(--fg-border);
   border-radius: var(--step-s5);
   padding-inline: var(--space-3xs);
-  padding-block: 0.1em;
+  padding-block: 0.1rem;
 }
 
 /* -------------------------------------------------------------------------- */
