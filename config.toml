@@ -31,7 +31,7 @@ navbar = [
   { name = "mastodon", url = "https://social.treehouse.systems/@ayushnix", rel="me" },
   { name = "git", url = "https://github.com/ayushnix" }
 ]
-light_theme_color = "#f0f0f0"
+light_theme_color = "#f8f8f8"
 dark_theme_color = "#282c34"
 
 [extra.content_license]
