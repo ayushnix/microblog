@@ -27,8 +27,9 @@ keywords = [ "microblog", "linux", "devops", "openbsd" ]
 custom_css = "css/custom.css"
 manifest = "site.webmanifest"
 navbar = [
+  { name = "my wiki", url = "https://wiki.ayushnix.com" },
   { name = "mastodon", url = "https://social.treehouse.systems/@ayushnix", rel="me" },
-  { name = "my wiki", url = "https://wiki.ayushnix.com" }
+  { name = "git", url = "https://github.com/ayushnix" }
 ]
 light_theme_color = "#f0f0f0"
 dark_theme_color = "#282c34"
