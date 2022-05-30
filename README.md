@@ -7,7 +7,7 @@ licensed under [0BSD][4]. Please read the preformatted text mentioned below for 
 details of the source code.
 
 ```
-Copyright (C) 2006 by Ayush Agarwal
+Copyright (C) 2022 by Ayush Agarwal
 
 Permission to use, copy, modify, and/or distribute this software for any purpose
 with or without fee is hereby granted.
