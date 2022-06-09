@@ -5,7 +5,7 @@ tags = [ "regex" ]
 +++
 
 Let's say you download a useful bash script that uses bubblewrap to sandbox electron bloat like
-Signal. The script is great but, unforunately, it uses `function blah { }` to define functions
+Signal. The script is great but, unfortunately, it uses `function blah { }` to define functions
 instead of `blah() { }`. There are 19 such "functions" in this script. You could manually change all
 of them to the latter format. Or, you could use a regex in vim and change it in a few seconds.
 
