@@ -25,5 +25,5 @@ html {
 
 If you don't care about symmetry, you can remove `both-edges`.
 
-[1]: ./scrollbar-layout-shift
+[1]: /scrollbar-layout-shift
 [2]: https://caniuse.com/mdn-css_properties_scrollbar-gutter
