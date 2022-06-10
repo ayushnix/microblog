@@ -60,7 +60,7 @@ get_content() {
   fi
 
   content="$($sedbin -n '/^+++$/,/^+++$/!p' "$1" \
-    | pandoc --from commonmark --to markdown_strict --lua-filter ./remove_link.lua --wrap=none)"
+    | pandoc --from commonmark --to commonmark --lua-filter ./remove_link.lua --wrap=none)"
   if [[ -n $content ]]; then
     printf "%s\n" "$content"
   else
