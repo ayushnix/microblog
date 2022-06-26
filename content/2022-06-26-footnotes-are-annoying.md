@@ -1,7 +1,7 @@
 +++
 title = "Footnotes Are Annoying"
 [taxonomies]
-tags = [ "ux" ]
+tags = [ "UX" ]
 +++
 
 I've always found footnotes in blogs and wikis to be annoying but I wasn't aware of a better
