@@ -10,9 +10,9 @@ internal [LuCI web portal][4] for my OpenWrt router. However, I've been unable t
 website for the past few months on Firefox. Considering this is an internal website, I didn't think
 much about it, especially because it was working fine on Chromium.
 
-I was browsing [a thread on Lobsters][2] when I came across the same issue. I've been was facing the
-same issue. For some reason, I remembered that OCSP responses need to be fetched by the server. In
-my case, I'm running LuCI on nginx.
+I was browsing [a thread on Lobsters][2] when I came across a comment with the same issue. For some
+reason, I remembered that OCSP responses need to be fetched by the server. In my case, I'm running
+LuCI on nginx.
 
 I installed [AdGuard Home][3] on a RaspberryPi 4B a few months ago and created some firewall rules
 in my router to intercept all DNS plaintext traffic and redirect it to my RaspberryPi. I went back
