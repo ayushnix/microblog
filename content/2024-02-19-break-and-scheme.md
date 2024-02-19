@@ -40,7 +40,7 @@ I've decided that I've had enough of becoming frustrated whenever I encounter
 these roadblocks. I've started teaching myself how to write code and I've begun
 with the book [Simply Scheme by Brian Harvey and Matthew Wright][4]. I'll follow
 it up with [Structure and Interpretation of Computer Programs][5]. I know, it'll
-take some time for me to become compentent enough but I'm patient and can put
+take some time for me to become competent enough but I'm patient and can put
 stuff on hold until I can do it right. And I won't quit this time.
 
 Thank you beets, for making me frustrated enough to question myself and for
